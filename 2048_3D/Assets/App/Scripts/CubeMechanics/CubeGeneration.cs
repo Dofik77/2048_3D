@@ -27,18 +27,13 @@ namespace App.Scripts.CubeMechanics
         private void PlaceCube(Cube cube)
         {
             cube.transform.position = _platformCubeSpawn.transform.position;
-            _cubePrefab.CollisionCube += OnCubeCollision;
+            _cubePrefab.DestroyCube += OnCubeCollideWith;
         }
 
-        private void OnCubeCollision(Cube cube)
+        private void OnCubeCollideWith(Cube cube)
         {
-            cube.CollisionCube -= OnCubeCollision;
+            cube.DestroyCube -= OnCubeCollideWith;
             _cubePool.ReturnObjectToPool(cube);
         }
-        
-        
-        
-
-
     }
 }
