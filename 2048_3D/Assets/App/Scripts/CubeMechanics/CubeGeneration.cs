@@ -27,12 +27,12 @@ namespace App.Scripts.CubeMechanics
         private void PlaceCube(Cube cube)
         {
             cube.transform.position = _platformCubeSpawn.transform.position;
-            _cubePrefab.DestroyCube += OnCubeCollideWith;
+            _cubePrefab.DeactiveCube += OnCubeCollideWith;
         }
 
         private void OnCubeCollideWith(Cube cube)
         {
-            cube.DestroyCube -= OnCubeCollideWith;
+            cube.DeactiveCube -= OnCubeCollideWith;
             _cubePool.ReturnObjectToPool(cube);
         }
     }

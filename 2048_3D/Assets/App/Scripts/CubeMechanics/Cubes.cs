@@ -10,9 +10,6 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private float _speed;
         [SerializeField] private CubeGeneration _generation;
         [SerializeField] private List<int> _valueOfCubes;
-        
-        private List<Cube> _cubes = new List<Cube>();
-        
 
         private void OnEnable()
         {
@@ -28,8 +25,7 @@ namespace App.Scripts.CubeMechanics
         private void OnCubeSpawn(Cube cube)
         {
             cube.CollideWithCube += OnCubeCollideCube;
-            _cubes.Add(cube);
-        
+
             var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count - 1)];
             cube.Initilize(_speed, value);
         }
@@ -37,12 +33,14 @@ namespace App.Scripts.CubeMechanics
         private void OnCubeCollideCube(Cube launchedCube, Cube strikingCube)
         {
             launchedCube.CollideWithCube -= OnCubeCollideCube;
-            //передавать launchedCube генератору и возвращать в кучу его
-
-            _cubes.Remove(launchedCube);
+            //destroy кубик
+            
+            strikingCube.CollideWithCube -= OnCubeCollideCube;
             
             strikingCube.ChangeCubeValue(strikingCube);
+            strikingCube.CollideWithCube += OnCubeCollideCube;
             
+            //rewrite shitcode
         }
         
     }
