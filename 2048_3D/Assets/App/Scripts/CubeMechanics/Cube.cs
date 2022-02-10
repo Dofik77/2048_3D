@@ -13,14 +13,11 @@ namespace App.Scripts.CubeMechanics
         private int _valueOfCube;
 
         private bool _canLaunch = true;
+        private bool _canMove = true;
 
         private void Update()
         {
-            if (CanLaunch())
-            {
-                transform.Translate(_vectorMove * _speed * Time.deltaTime);
-                _canLaunch = false;
-            }
+            LaunchCube(CanLaunch());
         }
 
         public void Initilize(float speed, int valueOfCube)
@@ -32,11 +29,17 @@ namespace App.Scripts.CubeMechanics
         private void OnCollisionEnter2D(Collision2D other)
         {
             var strikeCube = other.gameObject.GetComponent<Cube>();
+            CubeCombine(this, strikeCube);
             
             if(this._valueOfCube == strikeCube._valueOfCube)
                 CollideWithCube?.Invoke(this, strikeCube);
         }
-        
+
+        private void CubeCombine(Cube cube, Cube strikeCube)
+        {
+             
+        }
+
         public void ChangeCubeValue(Cube cube)
         {
             cube._valueOfCube *= 2;
@@ -48,10 +51,13 @@ namespace App.Scripts.CubeMechanics
             return _canLaunch && Input.GetMouseButtonDown(0);
         }
 
-        private float ChangeCubePosition()
+        private void LaunchCube(bool canLaunch)
         {
-            float pos;
-            return pos =  Input.GetAxis("Horizontal"); 
+            if (canLaunch)
+            {
+                transform.Translate(_vectorMove * _speed * Time.deltaTime);
+                _canLaunch = false;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private float _speed;
         [SerializeField] private CubeGeneration _generation;
         [SerializeField] private List<int> _valueOfCubes;
+        [SerializeField] private CubeMouseControl _cubeMouseControl;
 
         private void OnEnable()
         {
@@ -20,28 +21,35 @@ namespace App.Scripts.CubeMechanics
         {
             _generation.Spawned -= OnCubeSpawn;
         }
-
-
+        
         private void OnCubeSpawn(Cube cube)
         {
-            cube.CollideWithCube += OnCubeCollideCube;
-
+            CubeSubscribe(cube);
+            
+            _cubeMouseControl.Initialize(cube);
+                
             var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count - 1)];
             cube.Initilize(_speed, value);
         }
 
         private void OnCubeCollideCube(Cube launchedCube, Cube strikingCube)
         {
-            launchedCube.CollideWithCube -= OnCubeCollideCube;
-            //destroy кубик
-            
-            strikingCube.CollideWithCube -= OnCubeCollideCube;
-            
+            CubeUnsubscribe(launchedCube);
+            //destroy strike 
+            CubeUnsubscribe(strikingCube);
+
             strikingCube.ChangeCubeValue(strikingCube);
-            strikingCube.CollideWithCube += OnCubeCollideCube;
-            
-            //rewrite shitcode
+            CubeSubscribe(strikingCube);
         }
-        
+
+        private void CubeSubscribe(Cube cube)
+        {
+            cube.CollideWithCube += OnCubeCollideCube;
+        }
+
+        private void CubeUnsubscribe(Cube cube)
+        {
+            cube.CollideWithCube -= OnCubeCollideCube;
+        }
     }
 }

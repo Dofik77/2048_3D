@@ -22,12 +22,13 @@ namespace App.Scripts.CubeMechanics
         {
             var cube = _cubePool.GetPooledObject();
             PlaceCube(cube);
+            Spawned?.Invoke(cube);
         }
 
         private void PlaceCube(Cube cube)
         {
             cube.transform.position = _platformCubeSpawn.transform.position;
-            _cubePrefab.DeactiveCube += OnCubeCollideWith;
+            cube.DeactiveCube += OnCubeCollideWith;
         }
 
         private void OnCubeCollideWith(Cube cube)
