@@ -11,7 +11,7 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private Cube _cubePrefab;
         [SerializeField] private GameObject _platformCubeSpawn;
 
-        private CubePool _cubePool;
+        public CubePool _cubePool;
 
         private void Awake()
         {
@@ -28,12 +28,12 @@ namespace App.Scripts.CubeMechanics
         private void PlaceCube(Cube cube)
         {
             cube.transform.position = _platformCubeSpawn.transform.position;
-            cube.DeactiveCube += OnCubeCollideWith;
+            cube.DeactiveCube += OnCubeCombine;
         }
 
-        private void OnCubeCollideWith(Cube cube)
+        public void OnCubeCombine(Cube cube)
         {
-            cube.DeactiveCube -= OnCubeCollideWith;
+            cube.DeactiveCube -= OnCubeCombine;
             _cubePool.ReturnObjectToPool(cube);
         }
     }

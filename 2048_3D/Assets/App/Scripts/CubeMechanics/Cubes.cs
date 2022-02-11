@@ -24,7 +24,7 @@ namespace App.Scripts.CubeMechanics
         
         private void OnCubeSpawn(Cube cube)
         {
-            CubeSubscribe(cube);
+            cube.CombineCube += CubeCombine;
             
             _cubeMouseControl.Initialize(cube);
                 
@@ -32,24 +32,23 @@ namespace App.Scripts.CubeMechanics
             cube.Initilize(_speed, value);
         }
 
-        private void OnCubeCollideCube(Cube launchedCube, Cube strikingCube)
+        private void CubeCombine(Cube launchedCube, Cube strikingCube)
         {
-            CubeUnsubscribe(launchedCube);
-            //destroy strike 
-            CubeUnsubscribe(strikingCube);
+            Cube cube = _generation._cubePool.GetPooledObject();
 
-            strikingCube.ChangeCubeValue(strikingCube);
-            CubeSubscribe(strikingCube);
-        }
+            cube.ChangeCubeColor(cube);
+            cube.ChangeCubeValue(cube);
+            
+            
+            cube.transform.position = strikingCube.transform.position;
 
-        private void CubeSubscribe(Cube cube)
-        {
-            cube.CollideWithCube += OnCubeCollideCube;
-        }
-
-        private void CubeUnsubscribe(Cube cube)
-        {
-            cube.CollideWithCube -= OnCubeCollideCube;
+            launchedCube.CombineCube -= CubeCombine;
+            strikingCube.CombineCube -= CubeCombine;
+            
+            _generation.OnCubeCombine(launchedCube);
+            _generation.OnCubeCombine(strikingCube);
+            
+            
         }
     }
 }
