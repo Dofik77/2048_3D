@@ -12,28 +12,33 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private GameObject _platformCubeSpawn;
 
         public CubePool _cubePool;
+        private Vector3 platformPosition;
 
+        private Cube _actualCube;
+        
         private void Awake()
         {
             _cubePool = new CubePool(_cubePrefab);
+            platformPosition = _platformCubeSpawn.transform.position;
         }
 
-        private void Spawning()
+        public Cube Spawning()
         {
             var cube = _cubePool.GetPooledObject();
             PlaceCube(cube);
             Spawned?.Invoke(cube);
+
+            return cube;
         }
 
         private void PlaceCube(Cube cube)
         {
-            cube.transform.position = _platformCubeSpawn.transform.position;
-            cube.DeactiveCube += OnCubeCombine;
+            cube.transform.position = 
+                new Vector3(platformPosition.x, platformPosition.y + 0.5f, platformPosition.z);
         }
 
         public void OnCubeCombine(Cube cube)
         {
-            cube.DeactiveCube -= OnCubeCombine;
             _cubePool.ReturnObjectToPool(cube);
         }
     }

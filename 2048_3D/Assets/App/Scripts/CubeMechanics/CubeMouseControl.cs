@@ -1,42 +1,84 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace App.Scripts.CubeMechanics
 {
     public class CubeMouseControl : MonoBehaviour
     {
+        public event Action CubeIsLauched;
+    
         [SerializeField] private Camera _camera;
         [SerializeField] private Collider _cubePlane;
         [SerializeField] private float _offsetBorderPlane;
-        
-        private Transform _cube;
-        
-        public void Initialize(Cube currentCube)
+        [SerializeField] private Cubes _cubes;
+
+        private Rigidbody _rb;
+        private Vector3 _vectorMove = Vector3.forward;
+
+        private Cube _actualCube;
+
+        private Coroutine _moveCoroutine;
+
+        public void Initialize(Cube cube)
         {
-            _cube = currentCube.transform;
+            _actualCube = cube;
+        }
+        
+        public void StartMove()
+        {
+            _moveCoroutine = StartCoroutine(CubeMouseMove());
+        }
+        
+        public void StopMove()
+        {
+            StopCoroutine(_moveCoroutine);
         }
 
-        private void Update()
+        private IEnumerator CubeMouseMove()
         {
-            CubeTransform();
-        }
+            while (true)
+            {
+                yield return null;
 
-        private void CubeTransform()
+                CubeMouseMove(_actualCube);
+                LaunchCube(CanLaunch(), _actualCube);
+            }
+        }
+        
+
+        private void CubeMouseMove(Cube cube)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out RaycastHit raycastHit) && CheckBoundsOfPlane(raycastHit, _cubePlane))
             {
-                _cube.transform.position = new Vector3( _cube.position.x,  _cube.position.y, raycastHit.point.z);
+                cube.transform.position = new Vector3(raycastHit.point.x,  cube.transform.position.y, cube.transform.position.z);
             }
         }
 
         private bool CheckBoundsOfPlane(RaycastHit raycastHit, Collider plane)
         {
-            var leftBorder = plane.bounds.min.z + _offsetBorderPlane;
-            var rightBorder = plane.bounds.max.z - _offsetBorderPlane;
-            return raycastHit.point.z > leftBorder && raycastHit.point.z < rightBorder ;
+            var leftBorder = plane.bounds.min.x + _offsetBorderPlane;
+            var rightBorder = plane.bounds.max.x - _offsetBorderPlane;
+            return raycastHit.point.x > leftBorder && raycastHit.point.x < rightBorder ;
         }
         
+        private void LaunchCube(bool canLaunch, Cube cube)
+        {
+            if (canLaunch)
+            {
+                _rb = cube.GetComponent<Rigidbody>();
+                _rb.AddForce(transform.forward);
+                CubeIsLauched?.Invoke();
+            }
+        }
+        
+        private bool CanLaunch()
+        {
+            return Input.GetMouseButtonDown(0);
+        }
+
     }
 }

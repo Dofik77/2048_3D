@@ -21,34 +21,51 @@ namespace App.Scripts.CubeMechanics
         {
             _generation.Spawned -= OnCubeSpawn;
         }
+
+        public void GenerateCube()
+        {
+            _generation.Spawning();
+        }
         
         private void OnCubeSpawn(Cube cube)
         {
-            cube.CombineCube += CubeCombine;
-            
             _cubeMouseControl.Initialize(cube);
-                
-            var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count - 1)];
-            cube.Initilize(_speed, value);
+            
+            var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count - 1)]; // cube generate должен задавать Value
+            cube.Initilize(value);
+            
+            cube.OnCubeCombine += CubeCombine;
+            cube.OnCubeStopped += CubeStopped;
+            
+            _cubeMouseControl.StartMove();
+            _cubeMouseControl.CubeIsLauched += CubeLaucnhedByMouse;
         }
 
+        private void CubeLaucnhedByMouse()
+        {
+            _cubeMouseControl.StopMove();
+            _cubeMouseControl.CubeIsLauched -= CubeLaucnhedByMouse;
+        }
+
+        private void CubeStopped()
+        {
+            GenerateCube();
+        }
+        
         private void CubeCombine(Cube launchedCube, Cube strikingCube)
         {
-            Cube cube = _generation._cubePool.GetPooledObject();
+            Cube newCube = _generation._cubePool.GetPooledObject();
 
-            cube.ChangeCubeColor(cube);
-            cube.ChangeCubeValue(cube);
+            newCube.ChangeCubeColor(newCube);
+            newCube.ChangeCubeValue(newCube);
             
-            
-            cube.transform.position = strikingCube.transform.position;
+            newCube.transform.position = strikingCube.transform.position;
 
-            launchedCube.CombineCube -= CubeCombine;
-            strikingCube.CombineCube -= CubeCombine;
+            launchedCube.OnCubeCombine -= CubeCombine;
+            strikingCube.OnCubeCombine -= CubeCombine;
             
             _generation.OnCubeCombine(launchedCube);
             _generation.OnCubeCombine(strikingCube);
-            
-            
         }
     }
 }
