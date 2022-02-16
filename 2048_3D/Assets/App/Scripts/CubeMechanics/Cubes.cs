@@ -11,6 +11,8 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private List<int> _valueOfCubes;
         [SerializeField] private CubeMouseControl _cubeMouseControl;
 
+        public Cube _actualCube;
+
         private void OnEnable()
         {
             _generation.Spawned += OnCubeSpawn;
@@ -21,51 +23,48 @@ namespace App.Scripts.CubeMechanics
             _generation.Spawned -= OnCubeSpawn;
         }
 
-        public void GenerateCube()
-        {
-            _generation.Spawning();
-        }
-        
         private void OnCubeSpawn(Cube cube)
         {
+            _actualCube = cube;
             _cubeMouseControl.Initialize(cube);
             
-            var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count - 1)]; // cube generate должен задавать Value
+            var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count)]; // cube generate должен задавать Value
             cube.Initilize(value);
-            
+
+            cube.OnCubeStopedByObjects += CubeStopedByObjects;
             cube.OnCubeCombine += CubeCombine;
-            cube.OnCubeStopped += CubeStopped;
             
             _cubeMouseControl.StartMove();
-            _cubeMouseControl.CubeIsLauched += CubeLaucnhedByMouse;
-        }
-
-        private void CubeLaucnhedByMouse(Cube cube)
-        {
-            _cubeMouseControl.StopMove();
-            _cubeMouseControl.CubeIsLauched -= CubeLaucnhedByMouse;
-        }
-
-        private void CubeStopped(Cube cube)
-        {
-            cube.OnCubeStopped -= CubeStopped;
-            GenerateCube();
+            _cubeMouseControl.CubeLaunch += CubeOutControllOfMouse;
         }
         
+        private void CubeStopedByObjects(Cube cube)
+        {
+            cube.OnCubeStopedByObjects -= CubeStopedByObjects;
+            
+            if(cube.gameObject == _actualCube.gameObject)
+                _generation.Spawning();
+        }
+
         private void CubeCombine(Cube launchedCube, Cube strikingCube)
         {
-            Cube newCube = _generation._cubePool.GetPooledObject();
-
-            newCube.ChangeCubeColor(newCube);
-            newCube.ChangeCubeValue(newCube);
-            
-            newCube.transform.position = strikingCube.transform.position;
-
-            launchedCube.OnCubeCombine -= CubeCombine;
-            strikingCube.OnCubeCombine -= CubeCombine;
-            
             _generation.OnCubeCombine(launchedCube);
             _generation.OnCubeCombine(strikingCube);
+
+            Cube newCube = _generation._cubePool.GetPooledObject();
+            newCube.ChangeCubeValue(launchedCube.ValueOfCube);
+            newCube.transform.position = strikingCube.transform.position;
+
+            newCube.OnCubeCombine += CubeCombine;
+            //отписаться от CubeCombine 
+        }
+        
+        
+        
+        private void CubeOutControllOfMouse(Cube cube)
+        {
+            _cubeMouseControl.StopMove();
+            _cubeMouseControl.CubeLaunch -= CubeOutControllOfMouse;
         }
     }
 }

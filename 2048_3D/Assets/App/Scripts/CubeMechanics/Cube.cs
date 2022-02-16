@@ -9,11 +9,23 @@ namespace App.Scripts.CubeMechanics
     public class Cube : MonoBehaviour
     {
         public event Action<Cube, Cube> OnCubeCombine;
-        public event Action<Cube> OnCubeStopped;
+        public event Action<Cube> OnCubeStopedByObjects;
+        public event Action<Cube> OnCubeStopedByCube;
         
-        private int _valueOfCube;
+        [SerializeField] private TMP_Text _textValueOfCube;
+        [SerializeField] private Rigidbody _rb;
 
-        private TMP_Text _textValueOfCube;
+        private int _valueOfCube = 0;
+        public Rigidbody Rb
+        {
+            get => _rb;
+        }
+        public int ValueOfCube
+        {
+            get => _valueOfCube;
+            private set => _valueOfCube = value;
+        }
+
 
         public void Initilize(int valueOfCube)
         {
@@ -27,27 +39,31 @@ namespace App.Scripts.CubeMechanics
 
         private void OnCollisionEnter(Collision other)
         {
+            var strikingCube = other.gameObject.GetComponent<Cube>();
 
-            if (other.gameObject.CompareTag("Border"))
+            if (other.gameObject.CompareTag("Border") || other.gameObject.CompareTag("Cube"))
             {
-                OnCubeStopped?.Invoke(this);
+                OnCubeStopedByObjects?.Invoke(this);
             }
 
-            if (other.gameObject.CompareTag("Cube"))
+            if (strikingCube != null)
             {
-                OnCubeStopped?.Invoke(this);
-                
-                
+                if (this._valueOfCube == strikingCube._valueOfCube)
+                {
+                    OnCubeCombine?.Invoke(this, strikingCube);
+                }
             }
             
             //may be stopped invoke sth another method? 
         }
-        public void ChangeCubeValue(Cube cube)
+        
+        
+        public void ChangeCubeValue(int value)
         {
-            cube._valueOfCube *= 2;
-            _textValueOfCube.text = cube._valueOfCube.ToString();
+            _valueOfCube = value * 2;
+            _textValueOfCube.text = _valueOfCube.ToString();
         }
-
+        
         public void ChangeCubeColor(Cube cube)
         {
             var cubeMaterial = cube.GetComponent<Material>();

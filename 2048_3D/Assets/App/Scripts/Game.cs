@@ -15,7 +15,7 @@ namespace App.Scripts
 
         private void Start()
         {
-            _cubes.GenerateCube();
+            _cubeGeneration.Spawning();
         }
     }
 }

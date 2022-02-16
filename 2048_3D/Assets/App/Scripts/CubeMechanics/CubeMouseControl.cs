@@ -7,13 +7,13 @@ namespace App.Scripts.CubeMechanics
 {
     public class CubeMouseControl : MonoBehaviour
     {
-        public event Action<Cube> CubeIsLauched;
+        public event Action<Cube> CubeLaunch;
     
         [SerializeField] private Camera _camera;
         [SerializeField] private Collider _cubePlane;
         [SerializeField] private float _offsetBorderPlane;
         [SerializeField] private Cubes _cubes;
-
+        
         private Rigidbody _rb;
         private Vector3 _vectorMove = Vector3.forward;
 
@@ -54,7 +54,9 @@ namespace App.Scripts.CubeMechanics
 
             if(Physics.Raycast(ray, out RaycastHit raycastHit) && CheckBoundsOfPlane(raycastHit, _cubePlane))
             {
-                cube.transform.position = new Vector3(raycastHit.point.x,  cube.transform.position.y, cube.transform.position.z);
+                var position = cube.transform.position;
+                position = new Vector3(raycastHit.point.x,  position.y, position.z);
+                cube.transform.position = position;
             }
         }
 
@@ -71,7 +73,7 @@ namespace App.Scripts.CubeMechanics
             {
                 _rb = cube.GetComponent<Rigidbody>();
                 _rb.AddForce(transform.forward);
-                CubeIsLauched?.Invoke(cube);
+                CubeLaunch?.Invoke(cube);
             }
         }
         

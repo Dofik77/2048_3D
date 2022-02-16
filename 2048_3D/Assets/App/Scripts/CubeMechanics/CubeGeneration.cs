@@ -39,6 +39,8 @@ namespace App.Scripts.CubeMechanics
 
         public void OnCubeCombine(Cube cube)
         {
+            cube.gameObject.SetActive(false);
+            cube.Rb.velocity = Vector3.zero;
             _cubePool.ReturnObjectToPool(cube);
         }
     }
