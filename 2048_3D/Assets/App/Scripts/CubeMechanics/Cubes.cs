@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using Random = System.Random;
 
@@ -48,15 +49,20 @@ namespace App.Scripts.CubeMechanics
 
         private void CubeCombine(Cube launchedCube, Cube strikingCube)
         {
+            Debug.Log(launchedCube.ValueOfCube + " and " +  strikingCube.ValueOfCube);
+            
+            
             _generation.OnCubeCombine(launchedCube);
             _generation.OnCubeCombine(strikingCube);
+            launchedCube.OnCubeCombine -= CubeCombine;
+            strikingCube.OnCubeCombine -= CubeCombine;
 
             Cube newCube = _generation._cubePool.GetPooledObject();
             newCube.ChangeCubeValue(launchedCube.ValueOfCube);
             newCube.transform.position = strikingCube.transform.position;
 
             newCube.OnCubeCombine += CubeCombine;
-            //отписаться от CubeCombine 
+            newCube.Rb.AddForce(Vector3.up * 0.3f, ForceMode.Force);
         }
         
         

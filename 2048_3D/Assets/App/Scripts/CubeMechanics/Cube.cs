@@ -53,10 +53,7 @@ namespace App.Scripts.CubeMechanics
                     OnCubeCombine?.Invoke(this, strikingCube);
                 }
             }
-            
-            //may be stopped invoke sth another method? 
         }
-        
         
         public void ChangeCubeValue(int value)
         {

@@ -10,12 +10,18 @@ namespace App.Scripts
         [SerializeField] private Cube _cubePrefab;
         [SerializeField] private Cubes _cubes;
         [SerializeField] private CubeGeneration _cubeGeneration;
+        [SerializeField] private CubePool _cubePool;
 
         private Cube _actualCube;
 
         private void Start()
         {
             _cubeGeneration.Spawning();
+        }
+
+        private void Update()
+        {
+            
         }
     }
 }

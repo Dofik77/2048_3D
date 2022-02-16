@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace App.Scripts.CubeMechanics
 {
@@ -7,6 +9,8 @@ namespace App.Scripts.CubeMechanics
     {
         private readonly Stack<Cube> _pooledObjects;
         private readonly Cube _prefab;
+
+        public Stack<Cube> PooledObjects => _pooledObjects;
 
         public CubePool(Cube prefab)
         {
@@ -41,7 +45,5 @@ namespace App.Scripts.CubeMechanics
         {
             return Object.Instantiate(_prefab, Vector3.zero, Quaternion.identity);
         }
-
-
     }
 }
