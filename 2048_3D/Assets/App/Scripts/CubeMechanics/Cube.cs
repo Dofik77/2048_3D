@@ -9,44 +9,38 @@ namespace App.Scripts.CubeMechanics
     public class Cube : MonoBehaviour
     {
         public event Action<Cube, Cube> OnCubeCombine;
-        public event Action OnCubeStopped;
+        public event Action<Cube> OnCubeStopped;
         
         private int _valueOfCube;
 
         private TMP_Text _textValueOfCube;
 
-        private void Awake()
-        {
-            var objectTextValueOfCube = GameObject.Find("textValueOfCube");
-            _textValueOfCube = objectTextValueOfCube.GetComponent<TMP_Text>();
-        }
-
         public void Initilize(int valueOfCube)
         {
             _valueOfCube = valueOfCube;
+
+            TMP_Text objectTextValueOfCube = this.transform.GetComponentInChildren<TMP_Text>();
+            _textValueOfCube = objectTextValueOfCube;
+            
             _textValueOfCube.text = _valueOfCube.ToString();
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            var strikeCube = other.gameObject.GetComponent<Cube>();
-            
-            if (TryGetComponent<Cube>(out strikeCube)) 
-            {
-                if (this._valueOfCube == strikeCube._valueOfCube)
-                {
-                    OnCubeCombine?.Invoke(this, strikeCube);
-                }
-                else OnCubeStopped?.Invoke();
-            }
 
             if (other.gameObject.CompareTag("Border"))
             {
-                OnCubeStopped?.Invoke();
+                OnCubeStopped?.Invoke(this);
+            }
+
+            if (other.gameObject.CompareTag("Cube"))
+            {
+                OnCubeStopped?.Invoke(this);
+                
+                
             }
             
-            //rewrite
-            //check stopped by speed/etc
+            //may be stopped invoke sth another method? 
         }
         public void ChangeCubeValue(Cube cube)
         {

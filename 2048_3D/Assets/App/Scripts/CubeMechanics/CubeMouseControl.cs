@@ -7,7 +7,7 @@ namespace App.Scripts.CubeMechanics
 {
     public class CubeMouseControl : MonoBehaviour
     {
-        public event Action CubeIsLauched;
+        public event Action<Cube> CubeIsLauched;
     
         [SerializeField] private Camera _camera;
         [SerializeField] private Collider _cubePlane;
@@ -71,7 +71,7 @@ namespace App.Scripts.CubeMechanics
             {
                 _rb = cube.GetComponent<Rigidbody>();
                 _rb.AddForce(transform.forward);
-                CubeIsLauched?.Invoke();
+                CubeIsLauched?.Invoke(cube);
             }
         }
         

@@ -7,7 +7,6 @@ namespace App.Scripts.CubeMechanics
 {
     public class Cubes : MonoBehaviour
     {
-        [SerializeField] private float _speed;
         [SerializeField] private CubeGeneration _generation;
         [SerializeField] private List<int> _valueOfCubes;
         [SerializeField] private CubeMouseControl _cubeMouseControl;
@@ -41,14 +40,15 @@ namespace App.Scripts.CubeMechanics
             _cubeMouseControl.CubeIsLauched += CubeLaucnhedByMouse;
         }
 
-        private void CubeLaucnhedByMouse()
+        private void CubeLaucnhedByMouse(Cube cube)
         {
             _cubeMouseControl.StopMove();
             _cubeMouseControl.CubeIsLauched -= CubeLaucnhedByMouse;
         }
 
-        private void CubeStopped()
+        private void CubeStopped(Cube cube)
         {
+            cube.OnCubeStopped -= CubeStopped;
             GenerateCube();
         }
         
