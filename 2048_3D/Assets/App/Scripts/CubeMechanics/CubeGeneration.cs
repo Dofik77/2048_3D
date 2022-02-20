@@ -14,15 +14,13 @@ namespace App.Scripts.CubeMechanics
         public CubePool _cubePool;
         private Vector3 platformPosition;
 
-        private Cube _actualCube;
-        
         private void Awake()
         {
             _cubePool = new CubePool(_cubePrefab);
             platformPosition = _platformCubeSpawn.transform.position;
         }
 
-        public Cube Spawning()
+        public Cube StartSpawning()
         {
             var cube = _cubePool.GetPooledObject();
             PlaceCube(cube);
@@ -37,10 +35,8 @@ namespace App.Scripts.CubeMechanics
                 new Vector3(platformPosition.x, platformPosition.y + 0.5f, platformPosition.z);
         }
 
-        public void OnCubeCombine(Cube cube)
+        public void OnCubeCombined(Cube cube)
         {
-            cube.gameObject.SetActive(false);
-            cube.Rb.velocity = Vector3.zero;
             _cubePool.ReturnObjectToPool(cube);
         }
     }

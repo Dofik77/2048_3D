@@ -16,7 +16,7 @@ namespace App.Scripts
 
         private void Start()
         {
-            _cubeGeneration.Spawning();
+            _cubeGeneration.StartSpawning();
         }
 
         private void Update()

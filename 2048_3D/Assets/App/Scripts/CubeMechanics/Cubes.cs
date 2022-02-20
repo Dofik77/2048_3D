@@ -10,7 +10,7 @@ namespace App.Scripts.CubeMechanics
     {
         [SerializeField] private CubeGeneration _generation;
         [SerializeField] private List<int> _valueOfCubes;
-        [SerializeField] private CubeMouseControl _cubeMouseControl;
+        [SerializeField] private Slingshot slingshot;
 
         public Cube _actualCube;
 
@@ -27,50 +27,54 @@ namespace App.Scripts.CubeMechanics
         private void OnCubeSpawn(Cube cube)
         {
             _actualCube = cube;
-            _cubeMouseControl.Initialize(cube);
+            slingshot.Attach(cube);
             
             var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count)]; // cube generate должен задавать Value
-            cube.Initilize(value);
+            cube.ChangeValue(value);
 
-            cube.OnCubeStopedByObjects += CubeStopedByObjects;
-            cube.OnCubeCombine += CubeCombine;
+            cube.CubeStopped += CubeStopped;
+            cube.CubeCollided += CubeCollided;
             
-            _cubeMouseControl.StartMove();
-            _cubeMouseControl.CubeLaunch += CubeOutControllOfMouse;
+            slingshot.StartAiming();
+            slingshot.CubeLaunched += CubeOutControllOfMouse;
         }
         
-        private void CubeStopedByObjects(Cube cube)
+        private void CubeStopped(Cube cube)
         {
-            cube.OnCubeStopedByObjects -= CubeStopedByObjects;
+            cube.CubeStopped -= CubeStopped;
             
-            if(cube.gameObject == _actualCube.gameObject)
-                _generation.Spawning();
+            if(cube == _actualCube)
+                _generation.StartSpawning();
         }
 
-        private void CubeCombine(Cube launchedCube, Cube strikingCube)
+        private void CubeCollided(Cube launchedCube, Cube strikingCube)
         {
-            Debug.Log(launchedCube.ValueOfCube + " and " +  strikingCube.ValueOfCube);
+            Debug.Log(launchedCube.Value + " and " +  strikingCube.Value);
             
+            launchedCube.CubeCollided -= CubeCollided;
+            strikingCube.CubeCollided -= CubeCollided;
             
-            _generation.OnCubeCombine(launchedCube);
-            _generation.OnCubeCombine(strikingCube);
-            launchedCube.OnCubeCombine -= CubeCombine;
-            strikingCube.OnCubeCombine -= CubeCombine;
+            launchedCube.CubeStopped -= CubeStopped;
+            strikingCube.CubeStopped -= CubeStopped;
+            
+            launchedCube.Deactive(launchedCube);
+            strikingCube.Deactive(strikingCube);
 
             Cube newCube = _generation._cubePool.GetPooledObject();
-            newCube.ChangeCubeValue(launchedCube.ValueOfCube);
+            newCube.ChangeValue(launchedCube.Value * 2);
             newCube.transform.position = strikingCube.transform.position;
 
-            newCube.OnCubeCombine += CubeCombine;
-            newCube.Rb.AddForce(Vector3.up * 0.3f, ForceMode.Force);
+            newCube.CubeCollided += CubeCollided;
+            newCube.Jump(newCube);
+            
+            _generation.OnCubeCombined(launchedCube);
+            _generation.OnCubeCombined(strikingCube);
         }
-        
-        
-        
+
         private void CubeOutControllOfMouse(Cube cube)
         {
-            _cubeMouseControl.StopMove();
-            _cubeMouseControl.CubeLaunch -= CubeOutControllOfMouse;
+            slingshot.StopAiming();
+            slingshot.CubeLaunched -= CubeOutControllOfMouse;
         }
     }
 }

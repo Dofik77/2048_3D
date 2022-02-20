@@ -2,63 +2,27 @@
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace App.Scripts.CubeMechanics
 {
     public class Cube : MonoBehaviour
     {
-        public event Action<Cube, Cube> OnCubeCombine;
-        public event Action<Cube> OnCubeStopedByObjects;
-        public event Action<Cube> OnCubeStopedByCube;
+        public event Action<Cube, Cube> CubeCollided;
+        public event Action<Cube> CubeStopped;
+
+        [SerializeField] private TextMeshPro _textField;
+        [SerializeField] private Rigidbody _rigidbody;
+
+        private Rigidbody Rigidbody => _rigidbody;
+
+        public int Value { get; private set; }
         
-        [SerializeField] private TMP_Text _textValueOfCube;
-        [SerializeField] private Rigidbody _rb;
-
-        private int _valueOfCube = 0;
-        public Rigidbody Rb
+        public void ChangeValue(int value)
         {
-            get => _rb;
-        }
-        public int ValueOfCube
-        {
-            get => _valueOfCube;
-            private set => _valueOfCube = value;
-        }
-
-
-        public void Initilize(int valueOfCube)
-        {
-            _valueOfCube = valueOfCube;
-
-            TMP_Text objectTextValueOfCube = this.transform.GetComponentInChildren<TMP_Text>();
-            _textValueOfCube = objectTextValueOfCube;
-            
-            _textValueOfCube.text = _valueOfCube.ToString();
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            var strikingCube = other.gameObject.GetComponent<Cube>();
-
-            if (other.gameObject.CompareTag("Border") || other.gameObject.CompareTag("Cube"))
-            {
-                OnCubeStopedByObjects?.Invoke(this);
-            }
-
-            if (strikingCube != null)
-            {
-                if (this._valueOfCube == strikingCube._valueOfCube)
-                {
-                    OnCubeCombine?.Invoke(this, strikingCube);
-                }
-            }
-        }
-        
-        public void ChangeCubeValue(int value)
-        {
-            _valueOfCube = value * 2;
-            _textValueOfCube.text = _valueOfCube.ToString();
+            Value = value;
+            _textField.text = Value.ToString();
         }
         
         public void ChangeCubeColor(Cube cube)
@@ -66,6 +30,35 @@ namespace App.Scripts.CubeMechanics
             var cubeMaterial = cube.GetComponent<Material>();
             var color = new Color(Random.Range(10f, 10f), Random.Range(10f, 10f), Random.Range(10f, 10f));
             cubeMaterial.DOColor(color, 0.5f);
+        }
+
+        public void Deactive(Cube cube)
+        {
+            cube.gameObject.SetActive(false);
+            cube.Rigidbody.velocity = Vector3.zero;
+        }
+
+        public void Jump(Cube cube)
+        {
+            cube.Rigidbody.AddForce(Vector3.up * 0.3f, ForceMode.Force);
+        }
+        
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.TryGetComponent(out Plane _))  
+                return;
+
+            if (other.gameObject.TryGetComponent(out Cube cube))
+            {
+                if (Value == cube.Value)
+                {
+                    CubeStopped?.Invoke(this);
+                    CubeCollided?.Invoke(this, cube);
+                    return;
+                }
+            }
+            
+            CubeStopped?.Invoke(this);//переписать на poling (проверка позиция активного куда > line ? spawn cube : false)
         }
     }
 }
