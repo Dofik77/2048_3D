@@ -12,14 +12,15 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private Camera _camera;
         [SerializeField] private Collider _cubePlane;
         [SerializeField] private float _offsetBorderPlane;
-
-        private Rigidbody _rigidbody;
+        [SerializeField] private float _pushForce;
+        
         private Cube _actualCube;
         private Coroutine _aimCoroutine;
 
         public void Attach(Cube cube)
         {
             _actualCube = cube;
+            _actualCube.EnableKinematic();
         }
         
         public void StartAiming()
@@ -80,9 +81,9 @@ namespace App.Scripts.CubeMechanics
         }
         private void Launch(Cube cube)
         {
-            _rigidbody = cube.GetComponent<Rigidbody>();
-            _rigidbody.AddForce(transform.forward);
-            
+            _actualCube.DisableKinematic();
+            cube.Push(transform.forward, _pushForce);
+
             CubeLaunched?.Invoke(cube);
         }
     }
