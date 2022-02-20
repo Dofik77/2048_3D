@@ -13,6 +13,8 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private GameObject _platformCubeSpawn;
         [SerializeField] private List<int> _valueOfCubes;
         [SerializeField] private float _delay;
+        [SerializeField] private CubeColorsSo _colorsSo;
+        [SerializeField] private CubeValueSo _valueSo;
 
         public CubePool _cubePool;
         private Vector3 platformPosition;
@@ -33,9 +35,11 @@ namespace App.Scripts.CubeMechanics
             yield return new WaitForSeconds(_delay);
             
             var cube = _cubePool.GetPooledObject();
+            var value = _valueSo.GetValue();
             PlaceCube(cube);
-            var value = _valueOfCubes[UnityEngine.Random.Range(0, _valueOfCubes.Count)];
-            cube.ChangeValue(value); // в Scriptable Object
+            cube.ChangeValue(value);
+            cube.ColorCube = _colorsSo.GetColor(cube.Value);
+            
             Spawned?.Invoke(cube);
         }
 

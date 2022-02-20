@@ -10,8 +10,11 @@ namespace App.Scripts.CubeMechanics
 
         [SerializeField] private TextMeshPro _textField;
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private MeshRenderer _meshRenderer;
         
         public int Value { get; private set; }
+        public Color ColorCube { set => _meshRenderer.material.color = value; } 
+        // make like ChangeValue or isn't?
         
         public void ChangeValue(int value)
         {
@@ -23,6 +26,7 @@ namespace App.Scripts.CubeMechanics
         {
             gameObject.SetActive(false);
             _rigidbody.velocity = Vector3.zero;
+            //исправить поворот - занулить ротайшен
         }
 
         public void Push(Vector3 direction, float pushForce)

@@ -5,9 +5,9 @@ namespace App.Scripts
 {
     public class Game : MonoBehaviour
     {
-        [SerializeField] private Cube _cubePrefab;
         [SerializeField] private CubeGenerator _generator;
         [SerializeField] private Slingshot _slingshot;
+        [SerializeField] private CubeCombiner _combiner;
         
         private Cube _actualCube;
 
@@ -29,33 +29,11 @@ namespace App.Scripts
         private void OnCubeSpawn(Cube cube)
         {
             _actualCube = cube;
+            cube.CollideWithCube += _combiner.CollideWithCube;
+            
             _slingshot.Attach(cube);
-            
-            cube.CollideWithCube += CollideWithCube;
-            
             _slingshot.StartAiming();
             _slingshot.CubeLaunched += OnCubeLaunched;
-        }
-
-        private void CollideWithCube(Cube launchedCube, Cube strikingCube) // вынести в отдельный файл? 
-        {
-            Debug.Log(launchedCube.Value + " and " +  strikingCube.Value);
-            
-            launchedCube.CollideWithCube -= CollideWithCube;
-            strikingCube.CollideWithCube -= CollideWithCube;
-            
-            launchedCube.Deactivate();
-            strikingCube.Deactivate();
-
-            Cube newCube = _generator._cubePool.GetPooledObject();
-            newCube.ChangeValue(launchedCube.Value * 2);
-            newCube.transform.position = strikingCube.transform.position;
-
-            newCube.CollideWithCube += CollideWithCube;
-            newCube.Push(Vector3.up, 5);
-            
-            _generator.OnCubeCombined(launchedCube);
-            _generator.OnCubeCombined(strikingCube);
         }
 
         private void OnCubeLaunched(Cube cube)
