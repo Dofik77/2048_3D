@@ -29,6 +29,11 @@ namespace App.Scripts.CubeMechanics
             //исправить поворот - занулить ротайшен
         }
 
+        public void Torque(Vector3 direction, float torueForce)
+        {
+            _rigidbody.AddTorque(direction * torueForce, ForceMode.Impulse);
+        }
+
         public void Push(Vector3 direction, float pushForce)
         {
             _rigidbody.AddForce(direction * pushForce, ForceMode.Impulse);
