@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using UnityEngine;
 using TMPro;
 
@@ -13,20 +14,23 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private MeshRenderer _meshRenderer;
         
         public int Value { get; private set; }
-        public Color ColorCube { set => _meshRenderer.material.color = value; } 
+        public Color ColorCube { get => _meshRenderer.material.color; set => _meshRenderer.material.color = value; }
         // make like ChangeValue or isn't?
-        
+
+        public void ChangeScale()
+        {
+            transform.DOScale( 1f, 1.5f);
+        }
         public void ChangeValue(int value)
         {
             Value = value;
             _textField.text = Value.ToString();
-        }
+        }       
 
         public void Deactivate()
         {
             gameObject.SetActive(false);
             _rigidbody.velocity = Vector3.zero;
-            //исправить поворот - занулить ротайшен
         }
 
         public void Torque(Vector3 direction, float torueForce)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TheDeveloper.ColorChanger;
+using UnityEngine;
 
 namespace App.Scripts.CubeMechanics
 {
@@ -8,6 +9,7 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private float _forceOfPush;
         [SerializeField] private float _forceOfTorque;
         [SerializeField] private CubeColorsSo _colorsSo;
+        [SerializeField] private ParticleColorChanger _particlePrefab;
         
         public void CollideWithCube(Cube launchedCube, Cube strikingCube)
         {
@@ -15,27 +17,29 @@ namespace App.Scripts.CubeMechanics
             strikingCube.CollideWithCube -= CollideWithCube;
             
             launchedCube.Deactivate();
-            strikingCube.Deactivate();
             
-            _generator.OnCubeCombined(launchedCube);
-            _generator.OnCubeCombined(strikingCube);
+            //InstantiateParticle(launchedCube);
+            
+            _generator.ReturnToPoolOnCubeCombined(launchedCube);
 
-            CreateCombineCube(launchedCube, strikingCube);
+            CombineCube(strikingCube);
         }
 
-        public void CreateCombineCube(Cube launchedCube, Cube strikingCube)
+        private void InstantiateParticle(Cube cube)
         {
-            Cube newCube = _generator._cubePool.GetPooledObject();
+            _particlePrefab.ChangeColor(cube.ColorCube);
+            //TODO
+        }
+
+        public void CombineCube(Cube strikingCube)
+        {
+            strikingCube.ChangeValue(strikingCube.Value * 2);
+            strikingCube.ColorCube = _colorsSo.GetColor(strikingCube.Value);  
             
-            newCube.ChangeValue(launchedCube.Value * 2);
-            newCube.ColorCube = _colorsSo.GetColor(newCube.Value);
+            strikingCube.CollideWithCube += CollideWithCube;
             
-            newCube.transform.position = strikingCube.transform.position;
-            newCube.CollideWithCube += CollideWithCube;
-            newCube.Push(Vector3.up, _forceOfPush);
-            newCube.Torque(Vector3.up, _forceOfTorque);
-            //random rotate after push and Torque, realization in cube class
-            //rewrite this class, without create new cube, and with delete one of a cube
+            strikingCube.Push(Vector3.up, _forceOfPush);
+            strikingCube.Torque(Random.rotation.eulerAngles, _forceOfTorque);
         }
     }
 }
