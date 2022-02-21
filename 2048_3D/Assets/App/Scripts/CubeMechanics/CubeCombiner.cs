@@ -35,6 +35,7 @@ namespace App.Scripts.CubeMechanics
             newCube.Push(Vector3.up, _forceOfPush);
             newCube.Torque(Vector3.up, _forceOfTorque);
             //random rotate after push and Torque, realization in cube class
+            //rewrite this class, without create new cube, and with delete one of a cube
         }
     }
 }
