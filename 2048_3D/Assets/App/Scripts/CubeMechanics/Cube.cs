@@ -13,11 +13,11 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private MeshRenderer _meshRenderer;
 
-        [SerializeField] private float _targetScale;
+        [SerializeField] private float _targetScale;    
         [SerializeField] private float _durationExtension;
         
         public int Value { get; private set; }
-        public Color ColorCube { get => _meshRenderer.material.color; set => _meshRenderer.material.color = value; }
+        public Material ColorCube { get => _meshRenderer.material; set => _meshRenderer.material = value; }
         // make like ChangeValue or isn't?
 
         public void ChangeScale()

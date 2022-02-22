@@ -9,9 +9,9 @@ namespace App.Scripts
         {
             ParticleSystem _particleInst =  Instantiate(particlePrefab, cube.transform.position, Quaternion.identity);
             var main = _particleInst.main;
-            main.startColor = new ParticleSystem.MinMaxGradient(cube.ColorCube);
+            main.startColor = new ParticleSystem.MinMaxGradient(cube.ColorCube.color);
             
-            Destroy(_particleInst.gameObject, 4f);
+            Destroy(_particleInst.gameObject, 3f);
         }
     }
 }

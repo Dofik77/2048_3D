@@ -8,9 +8,10 @@ namespace App.Scripts
     [CreateAssetMenu(menuName = "Color Value", fileName = "CubeColorSo")]
     public class CubeColorsSo : ScriptableObject
     {
-        [SerializeField] private List<Color> _colors = new List<Color>();
+        [SerializeField] private List<Material> _colors = new List<Material>();
 
-        public Color GetColor(int value)
+        //TODO Colors -> Material 
+        public Material GetColor(int value)
         {
             int degree = Convert.ToInt32(Math.Sqrt(value));
             return _colors[degree];

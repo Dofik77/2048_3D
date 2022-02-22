@@ -37,6 +37,7 @@ namespace App.Scripts.CubeMechanics
             var cube = _cubePool.GetPooledObject();
             var value = _valueSo.GetValue();
             PlaceCube(cube);
+            
             cube.ChangeValue(value);
             cube.ChangeScale();
             cube.ColorCube = _colorsSo.GetColor(cube.Value);    
@@ -53,6 +54,7 @@ namespace App.Scripts.CubeMechanics
         public void ReturnToPoolOnCubeCombined(Cube cube)
         {
             cube.transform.rotation = Quaternion.Euler(Vector3.zero);
+            cube.transform.localScale = (Vector3.one/2);
             _cubePool.ReturnObjectToPool(cube);
         }
     }

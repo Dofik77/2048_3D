@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: CubeColorSo
   m_EditorClassIdentifier: 
   _colors:
-  - {r: 1, g: 1, b: 1, a: 0}
-  - {r: 0.75686276, g: 0.28627452, b: 0.28627452, a: 1}
-  - {r: 0.6117647, g: 0.8117647, b: 0.3529412, a: 1}
-  - {r: 0.8039216, g: 0.69803923, b: 0.3137255, a: 1}
-  - {r: 0.18431373, g: 0.34901962, b: 0.67058825, a: 1}
-  - {r: 0.8, g: 0.34117648, b: 0.78039217, a: 1}
-  - {r: 0.43220758, g: 0, b: 1, a: 0}
-  - {r: 0.6, g: 0.3647059, b: 0.14901961, a: 1}
-  - {r: 0.0754717, g: 0.07157639, b: 0.06792453, a: 1}
-  - {r: 0.40392157, g: 0.5882353, b: 0.2627451, a: 1}
-  - {r: 0.49019608, g: 0.22745098, b: 0.11372549, a: 1}
+  - {fileID: 2100000, guid: 676e29bbdc5ff1d4ebd76c9016402e3f, type: 2}
+  - {fileID: 2100000, guid: 676e29bbdc5ff1d4ebd76c9016402e3f, type: 2}
+  - {fileID: 2100000, guid: 2f6fef7665740ad4d91b7088e357837f, type: 2}
+  - {fileID: 2100000, guid: 36b8be0310ce31240951f2aaba9e4599, type: 2}
+  - {fileID: 2100000, guid: 0eee03cb8995aec449039da7026d8751, type: 2}
+  - {fileID: 2100000, guid: ed160892b8cab8e4b8f16ff42dc3d7a6, type: 2}
+  - {fileID: 2100000, guid: b653c80c90fab4d479443480ce3a9098, type: 2}
+  - {fileID: 2100000, guid: 256ce3193daf9bb4f9b0017e28f7ab16, type: 2}
+  - {fileID: 2100000, guid: 5cf2b2aabdcdb1c4081bd97472134ec9, type: 2}
+  - {fileID: 2100000, guid: ff46e223e691cdd429d07e2ae9acece9, type: 2}
+  - {fileID: 2100000, guid: a66e065d4dc71de4a83c867c6cfcbc82, type: 2}
