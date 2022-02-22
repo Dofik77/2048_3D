@@ -12,6 +12,9 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private TextMeshPro _textField;
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private MeshRenderer _meshRenderer;
+
+        [SerializeField] private float _targetScale;
+        [SerializeField] private float _durationExtension;
         
         public int Value { get; private set; }
         public Color ColorCube { get => _meshRenderer.material.color; set => _meshRenderer.material.color = value; }
@@ -19,12 +22,16 @@ namespace App.Scripts.CubeMechanics
 
         public void ChangeScale()
         {
-            transform.DOScale( 1f, 1.5f);
+            transform.DOScale( _targetScale, _durationExtension);
         }
         public void ChangeValue(int value)
         {
             Value = value;
-            _textField.text = Value.ToString();
+            TextMeshPro[] textFields = GetComponentsInChildren<TextMeshPro>();
+            foreach (var textField in textFields)
+            {
+                textField.text = Value.ToString();
+            }
         }       
 
         public void Deactivate()

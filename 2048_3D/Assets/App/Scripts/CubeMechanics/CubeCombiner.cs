@@ -1,5 +1,4 @@
-﻿using TheDeveloper.ColorChanger;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace App.Scripts.CubeMechanics
 {
@@ -9,7 +8,8 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private float _forceOfPush;
         [SerializeField] private float _forceOfTorque;
         [SerializeField] private CubeColorsSo _colorsSo;
-        [SerializeField] private ParticleColorChanger _particlePrefab;
+        [SerializeField] private ParticleSystem _particlePrefab;
+        [SerializeField] private ParticleSystemCreater _particleSystemCreater;
         
         public void CollideWithCube(Cube launchedCube, Cube strikingCube)
         {
@@ -17,18 +17,16 @@ namespace App.Scripts.CubeMechanics
             strikingCube.CollideWithCube -= CollideWithCube;
             
             launchedCube.Deactivate();
-            
-            //InstantiateParticle(launchedCube);
+            InitializeParticle(launchedCube);
             
             _generator.ReturnToPoolOnCubeCombined(launchedCube);
 
             CombineCube(strikingCube);
         }
 
-        private void InstantiateParticle(Cube cube)
+        private void InitializeParticle(Cube cube)
         {
-            _particlePrefab.ChangeColor(cube.ColorCube);
-            //TODO
+            _particleSystemCreater.CreateParticle(cube, _particlePrefab);
         }
 
         public void CombineCube(Cube strikingCube)
