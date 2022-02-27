@@ -12,7 +12,7 @@ namespace App.Scripts
         
         public Material GetColor(int value)
         {
-            int degree = Convert.ToInt32(Math.Sqrt(value));
+            int degree = Convert.ToInt32(Math.Log(value, 2));
             return _colors[degree];
         }
     }
