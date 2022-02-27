@@ -29,11 +29,18 @@ namespace App.Scripts
         private void OnCubeSpawn(Cube cube)
         {
             _actualCube = cube;
-            cube.CollideWithCube += _combiner.CollideWithCube;
-            
+            cube.CollideWithCube += OnCollideCubes;
+
             _slingshot.Attach(cube);
             _slingshot.StartAiming();
             _slingshot.CubeLaunched += OnCubeLaunched;
+        }
+
+        private void OnCollideCubes(Cube launchedCube, Cube strikingCube)
+        {
+            launchedCube.CollideWithCube -= OnCollideCubes;
+
+            _combiner.Combine(launchedCube, strikingCube);
         }
 
         private void OnCubeLaunched(Cube cube)

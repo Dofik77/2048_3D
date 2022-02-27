@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace App.Scripts.CubeMechanics
+namespace App.Scripts.ScriptableObjects
 {
     [CreateAssetMenu(menuName = "Get Start Cube Value", fileName = "CubeValueSo")]
-    public class CubeValueSo : ScriptableObject
+    public class CubeValue : ScriptableObject
     {
         [SerializeField] private List<int> _commonValue = new List<int>();
 

@@ -890,8 +890,8 @@ MonoBehaviour:
   _platformCubeSpawn: {fileID: 545765231}
   _valueOfCubes: 020000000400000008000000
   _delay: 1.5
-  _colorsSo: {fileID: 11400000, guid: 2030aba596612ae4185cf31b5136a1e4, type: 2}
-  _valueSo: {fileID: 11400000, guid: dc727231f043eb049852298f01b11bfe, type: 2}
+  colors: {fileID: 11400000, guid: 2030aba596612ae4185cf31b5136a1e4, type: 2}
+  value: {fileID: 11400000, guid: dc727231f043eb049852298f01b11bfe, type: 2}
 --- !u!4 &1290410340
 Transform:
   m_ObjectHideFlags: 0
@@ -1032,9 +1032,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _generator: {fileID: 1290410339}
-  _forceOfPush: 6
-  _forceOfTorque: 3
-  _colorsSo: {fileID: 11400000, guid: 2030aba596612ae4185cf31b5136a1e4, type: 2}
+  _forceOfPush: 7
+  _forceOfTorque: 4.5
+  colors: {fileID: 11400000, guid: 2030aba596612ae4185cf31b5136a1e4, type: 2}
   _particlePrefab: {fileID: 5135318467563960605, guid: 115b8d94496090f4a880c42eed2aab7e, type: 3}
   _particleSystemCreater: {fileID: 1958595879}
 --- !u!4 &1800060575
@@ -1193,7 +1193,7 @@ MonoBehaviour:
   _camera: {fileID: 963194227}
   _cubePlane: {fileID: 545765233}
   _offsetBorderPlane: 0.5
-  _pushForce: 15
+  _pushForce: 18
 --- !u!4 &1910688679
 Transform:
   m_ObjectHideFlags: 0

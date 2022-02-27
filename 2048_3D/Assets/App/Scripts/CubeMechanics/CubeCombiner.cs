@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace App.Scripts.CubeMechanics
 {
@@ -7,21 +9,19 @@ namespace App.Scripts.CubeMechanics
         [SerializeField] private CubeGenerator _generator;
         [SerializeField] private float _forceOfPush;
         [SerializeField] private float _forceOfTorque;
-        [SerializeField] private CubeColorsSo _colorsSo;
+        [SerializeField] private CubeColors colors;
         [SerializeField] private ParticleSystem _particlePrefab;
         [SerializeField] private ParticleSystemCreater _particleSystemCreater;
         
-        public void CollideWithCube(Cube launchedCube, Cube strikingCube)
+        public void Combine(Cube cube1, Cube cube2)
         {
-            launchedCube.CollideWithCube -= CollideWithCube;
-            strikingCube.CollideWithCube -= CollideWithCube;
-            
-            launchedCube.Deactivate();
-            InitializeParticle(launchedCube);
-            
-            _generator.ReturnToPoolOnCubeCombined(launchedCube);
+            cube1.Deactivate();
+            _generator.ReturnToPoolOnCubeCombined(cube1);
 
-            CombineCube(strikingCube);
+            cube2.ChangeValue(cube2.Value * 2);
+            cube2.ColorCube = colors.GetColor(cube2.Value);
+            InitializeParticle(cube2);
+            ApplyForce(cube2);
         }
 
         private void InitializeParticle(Cube cube)
@@ -29,13 +29,8 @@ namespace App.Scripts.CubeMechanics
             _particleSystemCreater.CreateParticle(cube, _particlePrefab);
         }
 
-        public void CombineCube(Cube strikingCube)
+        private void ApplyForce(Cube strikingCube)
         {
-            strikingCube.ChangeValue(strikingCube.Value * 2);
-            strikingCube.ColorCube = _colorsSo.GetColor(strikingCube.Value);  
-            
-            strikingCube.CollideWithCube += CollideWithCube;
-            
             strikingCube.Push(Vector3.up, _forceOfPush);
             strikingCube.Torque(Random.rotation.eulerAngles, _forceOfTorque);
         }
